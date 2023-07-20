@@ -199,18 +199,6 @@ if __name__ == '__main__':
                                 website += '.com'
                             print(f"The website is: {website}")
                             webbrowser.get('brave').open_new(website)
-
-
-                        """if '.' in filtered_query:
-                            filtered_query = ''.join(filtered_query[to_pos+1:])
-                            print(f"The website is: {filtered_query}")
-                            webbrowser.get('brave').open_new(filtered_query)
-                        else:
-                            filtered_query.append(".com")             
-                            filtered_query = ''.join(filtered_query[to_pos + 1:])
-                            print(f"The website is: {filtered_query}")
-                            print(filtered_query)
-                            webbrowser.get('brave').open_new(filtered_query)"""
                         
                     if 'open' in filtered_query: 
                         print("Opening...")
@@ -248,10 +236,13 @@ if __name__ == '__main__':
                         search(filtered_query3)
 
                     #Wolframalpha
-                    if filtered_query[0] == 'compute':
-                        filtered_query.pop(0)                 
+                    if 'compute' in filtered_query:
+                        compute_pos = filtered_query.index('compute')
+                        filtered_query = filtered_query[compute_pos: ]
+                        print(f"Filtered query wolframalpha: {filtered_query}")                
                         filtered_query = '+'.join(filtered_query)
-                        result = search_wolframalpha(filtered_query)
+                        print(f"Searching this: {filtered_query}")
+                        result = search_wolframalpha(filtered_query2)
 
                     try:
                         query = query[and_pos[0] + 1:]
