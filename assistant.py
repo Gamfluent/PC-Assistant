@@ -8,9 +8,10 @@ import pyautogui
 import time
 import requests
 import os
+import pytesseract
 
 flag = False
-
+pytesseract.pytesseract.tesseract_cmd = r'C:\Users\PC\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 # Speech engine initialization
 engine = pyttsx3.init()
 #voices = engine.setProperty('voice', voices[0].id) # 0 = male, 1 = female
@@ -141,11 +142,20 @@ def find_repeated_indices(lst, word):
             indices.append(i)
     return indices
 
+def preprocess_image(image_path):
+    # Load the image
+    image = cv2.imread(image_path)
+
+    # Convert to grayscale
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Thresholding (adjust threshold values as needed)
+    _, threshold_image = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+    return threshold_image
+
 # Main loop
 if __name__ == '__main__':
-    #current_time = datetime.now().time()
-    #speak(f"Greetings Kalpa, the time is currently {current_time.strftime('%H:%M')}")
-
     # Parse the command as a list by listening to keywords
     while True:
         #This will split the sentence said by me into a list of words
@@ -231,10 +241,10 @@ if __name__ == '__main__':
                         
                     if 'search' in filtered_query:
                         search_pos = filtered_query.index('search')
-                        filtered_query3 = filtered_query[search_pos + 1: ]
-                        print(f"What is being searched on yt: {filtered_query3}")
-                        filtered_query3 = ' '.join(filtered_query3)
-                        search(filtered_query3)
+                        filtered_query = filtered_query[search_pos + 1: ]
+                        print(f"What is being searched on yt: {filtered_query}")
+                        filtered_query = ' '.join(filtered_query)
+                        search(filtered_query)
 
                     #Wolframalpha
                     if 'compute' in filtered_query:
@@ -257,6 +267,16 @@ if __name__ == '__main__':
                         speak("Installing")
 
                         os.system(f'cmd /k choco install {app} -y')
+
+                    if 'type' in filtered_query:
+                        speak("Typing")
+                        type_pos = filtered_query.index('type')
+                        filtered_query = filtered_query[type_pos + 1: ]
+                        filtered_query = " ".join(filtered_query)
+
+                        for char in filtered_query:
+                            pyautogui.typewrite(char)
+                        
 
                     try:
                         query = query[and_pos[0] + 1:]
