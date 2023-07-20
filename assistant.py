@@ -7,6 +7,7 @@ import numpy as np
 import pyautogui
 import time
 import requests
+import os
 
 flag = False
 
@@ -252,6 +253,19 @@ if __name__ == '__main__':
                         filtered_query.pop(0)                 
                         filtered_query = '+'.join(filtered_query)
                         result = search_wolframalpha(filtered_query)
+
+                    if 'install' in filtered_query or 'download' in filtered_query:
+                        try:
+                            install_pos = filtered_query.index('install')
+                        except:
+                            install_pos = filtered_query.index('download')
+
+                        app = filtered_query[install_pos + 1]
+
+                        print(f"Installing: {app}")
+                        speak("Installing")
+
+                        os.system(f'cmd /k choco install {app} -y')
 
                     try:
                         query = query[and_pos[0] + 1:]
